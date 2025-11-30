@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_left_label"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text="특성L"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="8dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_gauge"
+            android:backgroundTint="#F5F5F5" />
+
+        <View
+            android:id="@+id/view_gauge_fill"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_gauge"
+            android:backgroundTint="@color/colorPrimary" />
+        <TextView
+            android:id="@+id/tv_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="75%"
+            android:textSize="12sp"
+            android:textColor="@color/white"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_right_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="특성R"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

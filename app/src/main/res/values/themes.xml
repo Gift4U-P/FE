@@ -1,0 +1,124 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Gift4U" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+
+    <!--bottom Navigation transparent 뒤에 동그라미를 없앤다-->
+    <style name="BottomNav_NoIndicator" parent="">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!--Splash Screen 테마-->
+    <style name="Gift4USplashTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/colorPrimary</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_main_gift4u_logo</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">1000</item>
+    </style>
+
+
+    <!--글꼴 style 정의-->
+    <!-- 일반 글씨 -->
+    <style name="freesentation4_16sp">
+        <item name="android:fontFamily">@font/freesentation_4regular</item>
+        <item name="android:textColor">@color/colorFont</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="freesentation5_16sp">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textColor">@color/colorFont</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="freesentation5_20sp">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textColor">@color/colorFont</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!--제목 글씨-->
+    <style name="freesentation5_24sp_title">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation6_16sp_title">
+        <item name="android:fontFamily">@font/freesentation_6semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation6_20sp_title">
+        <item name="android:fontFamily">@font/freesentation_6semibold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation6_24sp_title">
+        <item name="android:fontFamily">@font/freesentation_6semibold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation7_22sp_title">
+        <item name="android:fontFamily">@font/freesentation_7bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <!--아이콘 글씨-->
+    <style name="freesentation4_16sp_icon">
+        <item name="android:fontFamily">@font/freesentation_4regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation5_11sp_icon">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation5_16sp_icon">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation5_24sp_icon">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <!--커스텀 다이얼로그 조정-->
+    <style name="CustomAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- 화면 너비의 최소 0% 로: wrap_content 처럼 동작 -->
+        <item name="android:windowMinWidthMajor">0%</item>
+        <item name="android:windowMinWidthMinor">0%</item>
+        <!-- 윈도우 배경을 완전 투명으로 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!--바텀시트 다이얼로그-->
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!--bottomNav 조절-->
+    <style name="CustomBottomNavigationTextStyle" parent="TextAppearance.AppCompat.Caption">
+        <!-- 간격 줄이기 -->
+        <item name="android:layout_marginTop">-2dp</item>
+        <!-- 필요시 텍스트 사이즈 조정 -->
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Theme.Gift4U" parent="Base.Theme.Gift4U" />
+</resources>

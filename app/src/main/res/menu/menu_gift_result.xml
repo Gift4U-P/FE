@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_result_save"
+        android:icon="@drawable/ic_heart"
+        android:title="저장하기" />
+    <item
+        android:id="@+id/menu_result_home"
+        android:icon="@drawable/ic_menu_home2"
+        android:iconTint="@color/colorPrimary"
+        android:title="구매처 이동" />
+</menu>
