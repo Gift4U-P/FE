@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.gift4u.R
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.ui.gtest.GiftTestFragment
+import com.example.gift4u.ui.mypage.MyPageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.mypageFragment -> {
-                    // replaceFragment(MyPageFragment())
+                    replaceFragment(MyPageFragment())
                     true
                 }
                 else -> false
