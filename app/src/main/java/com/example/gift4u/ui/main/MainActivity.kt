@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.gift4u.R
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.ui.gtest.GiftTestFragment
+import com.example.gift4u.ui.keyword.KeywordQuestionFragment
 import com.example.gift4u.ui.mypage.MyPageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.shopFragment -> {
-                    // replaceFragment(ChatFragment())
+                    replaceFragment(KeywordQuestionFragment())
                     true
                 }
                 R.id.mypageFragment -> {

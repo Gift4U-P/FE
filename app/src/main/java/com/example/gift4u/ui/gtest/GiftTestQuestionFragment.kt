@@ -1,10 +1,12 @@
 package com.example.gift4u.ui.gtest
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.appcompat.widget.AppCompatButton // AppCompatButton 사용 권장
 import androidx.fragment.app.Fragment
 import com.example.gift4u.R
 
@@ -16,21 +18,40 @@ class GiftTestQuestionFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_gifttestquestion, container, false)
 
-        val btnA = view.findViewById<Button>(R.id.btn_answer_a)
-        val btnB = view.findViewById<Button>(R.id.btn_answer_b)
+        // 1. 버튼 초기화
+        val btnA = view.findViewById<AppCompatButton>(R.id.btn_answer_a)
+        val btnB = view.findViewById<AppCompatButton>(R.id.btn_answer_b)
+        val btnC = view.findViewById<AppCompatButton>(R.id.btn_answer_c)
 
-        // 버튼 클릭 시 다음 화면(결과)으로 이동하게 임시 설정
-        // 실제로는 질문 데이터를 교체하다가 마지막에 이동해야 함
-        val nextStep = View.OnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, GiftTestResultFragment())
-                // .addToBackStack(null) // 결과 화면에서는 뒤로가기 막을거면 제거
-                .commit()
+        // 리스트로 묶어서 관리
+        val buttons = listOf(btnA, btnB, btnC)
+
+        // 2. 각 버튼에 클릭 리스너 달기
+        buttons.forEach { button ->
+            button.setOnClickListener {
+                // (1) 모든 버튼의 선택 상태 초기화 (하나만 선택되게 하기 위함)
+                buttons.forEach { it.isSelected = false }
+
+                // (2) 클릭한 버튼만 '선택됨' 상태로 변경 (보라색 배경 적용됨)
+                button.isSelected = true
+
+                // (3) 0.3초 딜레이 후 다음 화면으로 이동
+                // (사용자가 자신이 뭘 눌렀는지 색깔 변화를 볼 시간을 줌)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    moveToNextStep()
+                }, 300)
+            }
         }
 
-        btnA.setOnClickListener(nextStep)
-        btnB.setOnClickListener(nextStep)
-
         return view
+    }
+
+    private fun moveToNextStep() {
+        // 프래그먼트가 아직 붙어있는지 확인 (앱 종료 시 크래시 방지)
+        if (!isAdded) return
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.main_fragmentContainer, GiftTestResultFragment())
+            .commit()
     }
 }

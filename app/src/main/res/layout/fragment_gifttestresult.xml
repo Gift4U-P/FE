@@ -52,45 +52,32 @@
                     android:padding="20dp">
 
                     <TextView
+                        android:id="@+id/personality_oneline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="15dp"
-                        android:text="이렇게 해석했어요."
-                        android:textSize="16sp"
+                        android:layout_marginBottom="10dp"
+                        android:text="성격 한 줄 요약"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
-                    <include
-                        android:id="@+id/gauge_1"
-                        layout="@layout/item_gauge_row" />
-
-                    <include
-                        android:id="@+id/gauge_2"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        layout="@layout/item_gauge_row"
-                        android:layout_marginTop="10dp" />
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="5dp"
+                        android:text="사람들과의 에너지 흐름을 잘 이끌어내는 계획형 외향인"
+                        android:textSize="10dp"/>
 
-                    <include
-                        android:id="@+id/gauge_3"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        layout="@layout/item_gauge_row"
-                        android:layout_marginTop="10dp" />
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:text="논리적이면서도 생기 넘치고, 신중하지만 분위기를 주도하는 타입."
+                        android:textColor="@color/colorGrayIcon"
+                        android:textSize="9dp"/>
 
-                    <include
-                        android:id="@+id/gauge_4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/item_gauge_row"
-                        android:layout_marginTop="10dp" />
-
-                    <include
-                        android:id="@+id/gauge_5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/item_gauge_row"
-                        android:layout_marginTop="10dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
