@@ -2,6 +2,7 @@ package com.example.gift4u.api
 
 import com.example.gift4u.BuildConfig
 import com.example.gift4u.api.gtest.network.GiftTestService
+import com.example.gift4u.api.home.network.HomeService
 import com.example.gift4u.api.login.network.LoginService
 import com.example.gift4u.api.mypage.network.MyPageService
 
@@ -54,9 +55,12 @@ object Gift4uClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    //각자 API service(network)를 구현하고 밑에 추가함으로써 유지보수 용이
+    //API service(network)를 구현하고 밑에 추가함으로써 유지보수 용이하게
     //로그인 관련
     val loginService: LoginService = retrofit.create(LoginService::class.java)
+
+    // 홈
+    val homeService: HomeService = retrofit.create(HomeService::class.java)
 
     // 마이페이지
     val myPageService: MyPageService = retrofit.create(MyPageService::class.java)

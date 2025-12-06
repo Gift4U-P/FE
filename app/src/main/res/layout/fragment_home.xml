@@ -22,12 +22,13 @@
 
 
         <TextView
+            android:id="@+id/tv_greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="반가워요! 닉네임님\nGift4U 에서 의미있는 선물을 찾아보세요."
-            android:fontFamily="@font/freesentation_6semibold"
+            android:fontFamily="@font/freesentation_7bold"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="60dp"
             app:layout_constraintStart_toStartOf="parent"

@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
-import com.example.gift4u.adaptor.Gift
 import com.example.gift4u.adaptor.GiftAdapter
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.ui.main.MainActivity
@@ -27,6 +26,7 @@ import com.example.gift4u.api.gtest.model.Big5Result
 import com.example.gift4u.api.gtest.model.SurveySaveRequest
 import com.example.gift4u.api.gtest.model.SurveySaveResponse
 import com.example.gift4u.api.gtest.network.GiftTestService
+import com.example.gift4u.api.home.model.HomeGiftItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,7 +67,13 @@ class GiftTestResultFragment : Fragment() {
 
             // GiftList 전체 항목을 GiftAdapter가 사용하는 Gift 객체로 변환
             val recommendData = giftList.map { item ->
-                Gift(item.mallName, item.title, item.lprice, 0)
+                HomeGiftItem(
+                    title = item.title,
+                    lprice = item.lprice,
+                    link = item.link,
+                    image = item.image,
+                    mallName = item.mallName
+                )
             }
 
             // 리사이클러뷰(rv_gift_list)에 연결

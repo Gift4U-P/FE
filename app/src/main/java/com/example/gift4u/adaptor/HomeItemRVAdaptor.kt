@@ -7,17 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
+import com.bumptech.glide.Glide
+import com.example.gift4u.api.home.model.HomeGiftItem
+import java.text.NumberFormat
+import java.util.Locale
 
-// 1. 데이터 클래스 (상품 정보)
-data class Gift(
-    val brand: String,
-    val name: String,
-    val price: String,
-    val imageResId: Int // 실제 앱에서는 String(URL)을 씁니다
-)
-
-// 2. 어댑터 클래스
-class GiftAdapter(private val giftList: List<Gift>) : RecyclerView.Adapter<GiftAdapter.GiftViewHolder>() {
+// 어댑터 클래스
+class GiftAdapter(private var giftList: List<HomeGiftItem>) : RecyclerView.Adapter<GiftAdapter.GiftViewHolder>() {
 
     class GiftViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val img: ImageView = itemView.findViewById(R.id.item_img)
@@ -33,11 +29,33 @@ class GiftAdapter(private val giftList: List<Gift>) : RecyclerView.Adapter<GiftA
 
     override fun onBindViewHolder(holder: GiftViewHolder, position: Int) {
         val item = giftList[position]
-        holder.brand.text = item.brand
-        holder.name.text = item.name
-        holder.price.text = item.price
-        // holder.img.setImageResource(item.imageResId) // 이미지 로딩
+
+        holder.brand.text = item.mallName
+        holder.name.text = item.title
+
+        // 가격 포맷팅 (예: 86900 -> 86,900원)
+        try {
+            val priceInt = item.lprice.toInt()
+            val formattedPrice = NumberFormat.getNumberInstance(Locale.KOREA).format(priceInt)
+            holder.price.text = "${formattedPrice}원"
+        } catch (e: Exception) {
+            holder.price.text = "${item.lprice}원"
+        }
+
+        // 이미지 로딩 (Glide 사용)
+        Glide.with(holder.itemView.context)
+            .load(item.image)
+            .placeholder(R.drawable.ic_launcher_background) // 로딩 중 이미지 (임시)
+            .error(R.drawable.ic_launcher_background)       // 에러 시 이미지 (임시)
+            .centerCrop()
+            .into(holder.img)
     }
 
     override fun getItemCount(): Int = giftList.size
+
+    // 데이터 갱신용 함수
+    fun updateList(newList: List<HomeGiftItem>) {
+        giftList = newList
+        notifyDataSetChanged()
+    }
 }

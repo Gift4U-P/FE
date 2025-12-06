@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
-import com.example.gift4u.adaptor.Gift
+import com.example.gift4u.api.home.model.HomeGiftItem
 import com.example.gift4u.adaptor.GiftAdapter
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.api.mypage.model.SurveyDetailRequest
@@ -79,7 +79,13 @@ class MyPageDetailFragment : Fragment() {
 
         // 2. 선물 리스트 매핑
         val giftList = data.giftList.map {
-            Gift(it.mallName, it.title, it.lprice, 0) // 이미지 처리 필요 시 수정
+            HomeGiftItem(
+                title = it.title,
+                lprice = it.lprice,
+                link = it.link,
+                image = it.image,
+                mallName = it.mallName
+            )
         }
 
         val rvGift = view.findViewById<RecyclerView>(R.id.rv_gift_list)

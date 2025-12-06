@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
-import com.example.gift4u.adaptor.Gift
+import com.example.gift4u.api.home.model.HomeGiftItem
 import com.example.gift4u.adaptor.GiftAdapter
 import com.example.gift4u.ui.main.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -33,20 +33,58 @@ class KeywordResultFragment : Fragment() {
         view.findViewById<TextView>(R.id.tv_bubble_relation).text = keywords.getOrElse(2) { "" }
         view.findViewById<TextView>(R.id.tv_bubble_vibe).text = keywords.getOrElse(3) { "" }
 
-        // 2. 추천 선물 리스트 설정 (GiftTestResultFragment 참고)
+        // 2. 추천 선물 리스트 설정 (더미 데이터 사용)
+        // giftList 변수가 없으므로, 직접 HomeGiftItem 리스트를 만듦
+        // API 연결 후 GiftTestResult처럼 API 응답(response.body().result.giftList)으로 교체
         val recommendData = listOf(
-            Gift("조말론", "우드 세이지", "190,000원~", 0),
-            Gift("딥디크", "도손", "210,000원~", 0),
-            Gift("바이레도", "블랑쉬", "320,000원~", 0),
-            Gift("샤넬", "넘버5", "250,000원~", 0),
-            Gift("크리드", "어벤투스", "450,000원~", 0),
-            Gift("르라보", "상탈 33", "300,000원~", 0)
+            HomeGiftItem(
+                title = "조말론 우드 세이지 앤 씨솔트",
+                lprice = "190000",
+                link = "",
+                image = "https://shopping-phinf.pstatic.net/main_8463788/84637882679.23.jpg", // 예시 이미지 URL
+                mallName = "조말론"
+            ),
+            HomeGiftItem(
+                title = "딥디크 도손 오 드 퍼퓸",
+                lprice = "210000",
+                link = "",
+                image = "https://shopping-phinf.pstatic.net/main_8268198/82681982517.7.jpg",
+                mallName = "딥디크"
+            ),
+            HomeGiftItem(
+                title = "바이레도 블랑쉬",
+                lprice = "320000",
+                link = "",
+                image = "https://shopping-phinf.pstatic.net/main_8865141/88651411414.3.jpg",
+                mallName = "바이레도"
+            ),
+            HomeGiftItem(
+                title = "샤넬 넘버5",
+                lprice = "250000",
+                link = "",
+                image = "https://shopping-phinf.pstatic.net/main_5757750/57577503467.jpg",
+                mallName = "샤넬"
+            ),
+            HomeGiftItem(
+                title = "크리드 어벤투스",
+                lprice = "450000",
+                link = "",
+                image = "https://shopping-phinf.pstatic.net/main_4793739/47937397265.20240523214534.jpg",
+                mallName = "크리드"
+            ),
+            HomeGiftItem(
+                title = "르라보 상탈 33",
+                lprice = "300000",
+                link = "",
+                image = "https://shopping-phinf.pstatic.net/main_8609149/86091497049.4.jpg",
+                mallName = "르라보"
+            )
         )
 
+        // 리사이클러뷰 연결
         val rvRecommend = view.findViewById<RecyclerView>(R.id.rv_result_recommend)
-        rvRecommend.adapter = GiftAdapter(recommendData)
-        // 3열 그리드로 설정 (2줄로 보이게 됨)
-        rvRecommend.layoutManager = GridLayoutManager(context, 3)
+        rvRecommend.adapter = GiftAdapter(recommendData) // HomeGiftItem 리스트 구조만 재사용(내부데이터는 api로 받아올 예정)
+        rvRecommend.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
 
 
         // 3. 결과 화면 하단 BNV (저장 / 홈으로) 설정
