@@ -8,5 +8,5 @@
         android:id="@+id/menu_result_home"
         android:icon="@drawable/ic_menu_home2"
         android:iconTint="@color/colorPrimary"
-        android:title="구매처 이동" />
+        android:title="홈으로" />
 </menu>

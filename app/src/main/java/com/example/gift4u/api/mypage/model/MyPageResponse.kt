@@ -1,5 +1,6 @@
 package com.example.gift4u.api.mypage.model
 
+import com.example.gift4u.api.gtest.model.Big5GiftItem
 import com.google.gson.annotations.SerializedName
 
 // 1. 최상위 응답 (서버가 주는 전체 JSON)
@@ -36,4 +37,26 @@ data class UserProfileResult(
     @SerializedName("name") val name: String,
     @SerializedName("gender") val gender: String, // "MALE" or "FEMALE"
     @SerializedName("email") val email: String
+)
+
+// 1. 상세 조회 요청 Body
+data class SurveyDetailRequest(
+    @SerializedName("surveyId") val surveyId: Int
+)
+
+// 2. 상세 조회 응답 Wrapper
+data class SurveyDetailResponse(
+    @SerializedName("isSuccess") val isSuccess: Boolean,
+    @SerializedName("code") val code: String,
+    @SerializedName("message") val message: String,
+    @SerializedName("result") val result: SurveyDetailResult?
+)
+
+// 3. 상세 조회 실제 데이터
+data class SurveyDetailResult(
+    @SerializedName("savedName") val savedName: String,
+    @SerializedName("analysis") val analysis: String,
+    @SerializedName("reasoning") val reasoning: String,
+    @SerializedName("card_message") val cardMessage: String,
+    @SerializedName("giftList") val giftList: List<Big5GiftItem>
 )

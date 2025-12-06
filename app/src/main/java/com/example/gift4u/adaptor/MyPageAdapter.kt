@@ -12,13 +12,17 @@ import java.util.Locale
 
 // MyPageAdapter.kt
 
-class MyPageAdapter(private var items: List<SurveyResultItem>) :
+class MyPageAdapter(
+    private var items: List<SurveyResultItem>,
+    private val onItemClick: (Int) -> Unit ): // surveyId를 반환하는 람다 함수
     RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
 
     // 현재 리스트가 어떤 타입인지 저장하는 변수 (기본값: Big5)
     private var currentType: String = "Big5"
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        val container: View = view.findViewById(R.id.card_profile) ?: view // 클릭 영역 정의
         val tvName: TextView = view.findViewById(R.id.tv_saved_name)
         val tvDate: TextView = view.findViewById(R.id.tv_date)
         val tvTag: TextView = view.findViewById(R.id.tv_category_tag)
@@ -32,10 +36,16 @@ class MyPageAdapter(private var items: List<SurveyResultItem>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
+        // 바인딩
         holder.tvName.text = item.savedName
-
         // 고정 텍스트 대신 변수 사용
         holder.tvTag.text = "$currentType 분석 결과"
+        holder.tvDate.text = item.createdAt
+
+        // 클릭 리스너 연결
+        holder.itemView.setOnClickListener {
+            onItemClick(item.surveyId) // 클릭 시 surveyId 전달
+        }
 
         try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())

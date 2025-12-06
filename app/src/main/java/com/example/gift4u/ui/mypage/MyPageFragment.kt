@@ -65,7 +65,20 @@ class MyPageFragment : Fragment() {
 
         // 리싸이클러뷰 설정
         rvList.layoutManager = LinearLayoutManager(context)
-        adapter = MyPageAdapter(emptyList())
+
+        // 어댑터 생성 시 클릭 람다 전달
+        adapter = MyPageAdapter(emptyList()) { surveyId ->
+            // 클릭 시 실행될 코드: 상세 프래그먼트로 이동
+            val fragment = MyPageDetailFragment()
+            val bundle = Bundle()
+            bundle.putInt("surveyId", surveyId)
+            fragment.arguments = bundle
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, fragment) // 메인 컨테이너 ID 확인
+                .addToBackStack(null)
+                .commit()
+        }
         rvList.adapter = adapter
 
         // 2. 탭 클릭 리스너
@@ -114,7 +127,7 @@ class MyPageFragment : Fragment() {
 
 // API 호출
 
-    // [추가] 사용자 프로필 API 호출
+    // 사용자 프로필 API 호출
     private fun fetchUserProfile() {
         Gift4uClient.myPageService.getUserProfile().enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(

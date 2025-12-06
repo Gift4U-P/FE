@@ -1,6 +1,7 @@
 package com.example.gift4u.api
 
 import com.example.gift4u.BuildConfig
+import com.example.gift4u.api.gtest.network.GiftTestService
 import com.example.gift4u.api.login.network.LoginService
 import com.example.gift4u.api.mypage.network.MyPageService
 
@@ -59,4 +60,7 @@ object Gift4uClient {
 
     // 마이페이지
     val myPageService: MyPageService = retrofit.create(MyPageService::class.java)
+
+    // Big5 결과
+    val giftTestService: GiftTestService = retrofit.create(GiftTestService::class.java)
 }
