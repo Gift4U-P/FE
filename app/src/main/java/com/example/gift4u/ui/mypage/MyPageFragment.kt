@@ -43,6 +43,9 @@ class MyPageFragment : Fragment() {
     private lateinit var tvKeyword: TextView
     private lateinit var lineKeyword: View
 
+    // 현재 탭 상태를 저장하는 변수 (기본값: true = Big5)
+    private var isBig5Mode: Boolean = true
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,16 +69,22 @@ class MyPageFragment : Fragment() {
         // 리싸이클러뷰 설정
         rvList.layoutManager = LinearLayoutManager(context)
 
-        // 어댑터 생성 시 클릭 람다 전달
+        // 어댑터 클릭 리스너: 현재 탭(isBig5Mode)에 따라 분기 처리
         adapter = MyPageAdapter(emptyList()) { surveyId ->
-            // 클릭 시 실행될 코드: 상세 프래그먼트로 이동
-            val fragment = MyPageDetailFragment()
-            val bundle = Bundle()
-            bundle.putInt("surveyId", surveyId)
-            fragment.arguments = bundle
+            val fragment: Fragment = if (isBig5Mode) {
+                // Big5 탭일 때 -> Big5 상세 화면
+                MyPageDetailFragment().apply {
+                    arguments = Bundle().apply { putInt("surveyId", surveyId) }
+                }
+            } else {
+                // 키워드 탭일 때 -> 키워드 상세 화면
+                MyPageKeywordDetailFragment().apply {
+                    arguments = Bundle().apply { putInt("surveyId", surveyId) }
+                }
+            }
 
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, fragment) // 메인 컨테이너 ID 확인
+                .replace(R.id.main_fragmentContainer, fragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -109,6 +118,9 @@ class MyPageFragment : Fragment() {
 
     // 탭 UI 변경 함수
     private fun setTabSelected(isBig5: Boolean) {
+        // 현재 모드 저장
+        isBig5Mode = isBig5
+
         val selectedColor = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
         val unselectedColor = Color.parseColor("#AAAAAA")
 

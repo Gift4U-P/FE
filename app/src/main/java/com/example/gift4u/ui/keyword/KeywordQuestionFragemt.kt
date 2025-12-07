@@ -3,17 +3,26 @@ package com.example.gift4u.ui.keyword
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
+import com.example.gift4u.api.Gift4uClient
+import com.example.gift4u.api.Gift4uClient.keywordTestService
+import com.example.gift4u.api.ktest.model.KeywordResultRequest
+import com.example.gift4u.api.ktest.model.KeywordResultResponse
 import com.example.gift4u.ui.main.MainActivity
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Callback
 
 // 질문 데이터 클래스
 data class QuestionStep(
@@ -30,15 +39,15 @@ class KeywordQuestionFragment : Fragment() {
     // 4단계 질문 데이터 정의
     private val questions = listOf(
         QuestionStep("나이", "선물하려는 상대방의\n나이대는 어떻게 되나요?", listOf("10대", "20대", "30대", "40대", "50대", "60대 이상")),
-        QuestionStep("성별", "상대방의 성별은\n어떻게 되나요?", listOf("남성", "여성")),
-        QuestionStep("관계", "상대방과\n어떤 관계인가요?", listOf("가족", "연인", "친구", "동료", "사제", "기타")),
-        QuestionStep("분위기", "상대방의 분위기는\n어떤가요?", listOf("세련된", "귀여운", "차분한", "성숙한", "러블리한", "시크한", "활발한", "우아한"))
+        QuestionStep("성별", "선물하려는 상대방의 성별은\n어떻게 되나요?", listOf("남성", "여성")),
+        QuestionStep("관계", "선물하려는 상대방과\n어떤 관계인가요?", listOf("가족", "연인", "친구", "동료", "사제", "기타")),
+        QuestionStep("상황", "어떤 상황에\n선물하시나요?", listOf("생일", "합격축하", "졸업", "졸업", "취업", "승진", "기념일", "집들이", "출산", "감사", "응원"))
     )
 
     private lateinit var tvTitle: TextView
     private lateinit var tvSubtitle: TextView
     private lateinit var rvOptions: RecyclerView
-    // [수정] ProgressBar 대신 진행 상태를 표시할 TextView
+    // 진행 상태 표시
     private lateinit var tvProgress: TextView
     private lateinit var adapter: OptionAdapter
 
@@ -54,7 +63,6 @@ class KeywordQuestionFragment : Fragment() {
         tvTitle = view.findViewById(R.id.tv_question_title)
         tvSubtitle = view.findViewById(R.id.tv_question_subtitle)
         rvOptions = view.findViewById(R.id.rv_options)
-        // [수정] TextView 초기화
         tvProgress = view.findViewById(R.id.tv_keyword_progress)
 
 
@@ -76,7 +84,6 @@ class KeywordQuestionFragment : Fragment() {
         rvOptions.adapter = adapter
 
         loadQuestion() // 첫 질문 로드
-
         return view
     }
 
@@ -84,7 +91,7 @@ class KeywordQuestionFragment : Fragment() {
         val question = questions[currentStep]
         tvTitle.text = question.title
         tvSubtitle.text = question.subtitle
-        // [수정] 진행 상태 TextView 업데이트 ("N/총 개수" 형식)
+        // 진행 상태 TextView 업데이트 ("N/총 개수" 형식)
         tvProgress.text = "${currentStep + 1}/${questions.size}"
         adapter.submitList(question.options)
     }
@@ -98,22 +105,56 @@ class KeywordQuestionFragment : Fragment() {
                 currentStep++
                 loadQuestion()
             } else {
-                moveToResult()
+                // 마지막 질문 완료 시 API 호출
+                sendKeywordResults()
             }
         }, 300)
     }
 
-    private fun moveToResult() {
-        val fragment = KeywordResultFragment()
-        val bundle = Bundle()
-        // 결과 화면으로 선택한 키워드들을 전달 (예: "20대", "여성", "연인", "세련된")
-        bundle.putStringArrayList("keywords", ArrayList(selectedKeywords))
-        fragment.arguments = bundle
+    // 키워드 결과 전송 API 호출
+    private fun sendKeywordResults() {
+        // 선택된 키워드: [나이, 성별, 관계, 상황]
+        // 예: ["20대", "여성", "연인", "생일"] -> API 요청 모델로 변환
 
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.main_fragmentContainer, fragment) // ID는 실제 Activity의 컨테이너 ID로 변경
-            .addToBackStack(null)
-            .commit()
+        val age = selectedKeywords.getOrElse(0) { "20대" }
+        val gender = selectedKeywords.getOrElse(1) { "여성" }
+        val relationship = selectedKeywords.getOrElse(2) { "친구" }
+        val situation = selectedKeywords.getOrElse(3) { "생일" }
+
+        val request = KeywordResultRequest(
+            age = age,
+            gender = gender,
+            relationship = relationship,
+            situation = situation
+        )
+
+        keywordTestService.sendKeywordResults(request).enqueue(object :
+            Callback<KeywordResultResponse> {
+            override fun onResponse(call: Call<KeywordResultResponse>, response: Response<KeywordResultResponse>) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    val resultData = response.body()!!.result
+
+                    // 성공 -> 결과 화면으로 이동
+                    val fragment = KeywordResultFragment()
+                    val bundle = Bundle()
+                    bundle.putStringArrayList("keywords", ArrayList(selectedKeywords)) // 상단 버블용
+                    bundle.putSerializable("keywordResult", resultData) // [중요] API 결과 전달
+                    fragment.arguments = bundle
+
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragmentContainer, fragment)
+                        .commit()
+                } else {
+                    Log.e("KeywordTest", "Failed: ${response.code()}")
+                    Toast.makeText(context, "결과 분석에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<KeywordResultResponse>, t: Throwable) {
+                Log.e("KeywordTest", "Network Error", t)
+                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -123,7 +164,7 @@ class KeywordQuestionFragment : Fragment() {
     }
 }
 
-// ... OptionAdapter 클래스는 그대로 유지됩니다. ...
+// OptionAdapter 클래스 그대로 유지
 class OptionAdapter(private val onClick: (String) -> Unit) : RecyclerView.Adapter<OptionAdapter.ViewHolder>() {
     private var items = listOf<String>()
     private var selectedPosition = -1

@@ -3,6 +3,7 @@ package com.example.gift4u.api
 import com.example.gift4u.BuildConfig
 import com.example.gift4u.api.gtest.network.GiftTestService
 import com.example.gift4u.api.home.network.HomeService
+import com.example.gift4u.api.ktest.network.KeywordTestService
 import com.example.gift4u.api.login.network.LoginService
 import com.example.gift4u.api.mypage.network.MyPageService
 
@@ -67,4 +68,8 @@ object Gift4uClient {
 
     // Big5 결과
     val giftTestService: GiftTestService = retrofit.create(GiftTestService::class.java)
+
+    // 키워드 결과
+    val keywordTestService: KeywordTestService = retrofit.create(KeywordTestService::class.java)
+
 }

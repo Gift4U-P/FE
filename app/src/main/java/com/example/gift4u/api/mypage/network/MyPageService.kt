@@ -1,5 +1,7 @@
 package com.example.gift4u.api.mypage.network
 
+import com.example.gift4u.api.mypage.model.KeywordDetailRequest
+import com.example.gift4u.api.mypage.model.KeywordDetailResponse
 import com.example.gift4u.api.mypage.model.SurveyDetailRequest
 import com.example.gift4u.api.mypage.model.SurveyDetailResponse
 import com.example.gift4u.api.mypage.model.SurveyResultListResponse
@@ -23,7 +25,11 @@ interface MyPageService {
     @GET("/users/profile")
     fun getUserProfile(): Call<UserProfileResponse>
 
-    // [추가] 설문 상세 결과 조회
+    // Big5 상세 결과 조회
     @POST("/survey/detailResult")
     fun getSurveyDetail(@Body request: SurveyDetailRequest): Call<SurveyDetailResponse>
+
+    // 키워드 상세 결과 조회
+    @POST("/keyword/detailResult")
+    fun getKeywordDetail(@Body request: KeywordDetailRequest): Call<KeywordDetailResponse>
 }
