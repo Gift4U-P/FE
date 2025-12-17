@@ -12,10 +12,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
 import com.example.gift4u.api.home.model.HomeGiftItem
 import com.example.gift4u.adaptor.GiftAdapter
+import com.example.gift4u.adaptor.ResultGiftAdapter
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.api.gtest.model.Big5Result
 import com.example.gift4u.api.ktest.model.KeywordSaveRequest
@@ -53,22 +55,33 @@ class KeywordResultFragment : Fragment() {
 
             // "20대 연인의 생일에는..." 문구 동적 변경
             view.findViewById<TextView>(R.id.tv_keywordText_recommend_label).text =
-                "${keywords[0]} ${keywords[2]}의 ${keywords[3]}에는\n이런 선물을 추천해요!"
+                "'${keywords[0]} ${keywords[2]}의 ${keywords[3]}에는 이런 선물을 추천해요!'"
 
-            // 추천 선물 리스트 설정
-            val giftList = data.giftList.map {
+            // 1. 전체 리스트 생성 및 정렬
+            val fullList = data.giftList.map {
                 HomeGiftItem(
                     title = it.title,
                     lprice = it.lprice,
                     link = it.link,
                     image = it.image,
-                    mallName = it.mallName
+                    mallName = it.mallName,
+                    accuracy = it.accuracy
                 )
-            }
+            }.sortedByDescending { it.accuracy }
 
-            val rvRecommend = view.findViewById<RecyclerView>(R.id.rv_result_recommend)
-            rvRecommend.adapter = GiftAdapter(giftList)
-            rvRecommend.layoutManager = GridLayoutManager(context, 3)
+            // 2. 리스트 분리
+            val bestList = fullList.take(3)
+            val restList = fullList.drop(3)
+
+            // 3. Best 3 연결 (Rank Type)
+            val rvBest = view.findViewById<RecyclerView>(R.id.rv_gift_best)
+            rvBest.adapter = ResultGiftAdapter(bestList, ResultGiftAdapter.TYPE_RANK)
+            rvBest.layoutManager = LinearLayoutManager(context)
+
+            // 4. 나머지 연결 (Grid Type)
+            val rvRest = view.findViewById<RecyclerView>(R.id.rv_gift_rest)
+            rvRest.adapter = ResultGiftAdapter(restList, ResultGiftAdapter.TYPE_GRID)
+            rvRest.layoutManager = GridLayoutManager(context, 3)
         }
 
         // 3. 결과 화면 하단 BNV (저장 / 홈으로) 설정

@@ -1,5 +1,6 @@
 package com.example.gift4u.api.mypage.model
 
+import com.example.gift4u.api.gtest.model.Big5Evidence
 import com.example.gift4u.api.gtest.model.Big5GiftItem
 import com.google.gson.annotations.SerializedName
 
@@ -58,6 +59,7 @@ data class SurveyDetailResponse(
 data class SurveyDetailResult(
     @SerializedName("savedName") val savedName: String,
     @SerializedName("analysis") val analysis: String,
+    @SerializedName("evidence") val evidence: List<Big5Evidence>,
     @SerializedName("reasoning") val reasoning: String,
     @SerializedName("card_message") val cardMessage: String,
     @SerializedName("giftList") val giftList: List<Big5GiftItem>

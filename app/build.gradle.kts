@@ -85,6 +85,8 @@ dependencies {
 
     //6) splash screen
     implementation("androidx.core:core-splashscreen:1.0.0")
+    // Lottie Animation Library
+    implementation("com.airbnb.android:lottie:6.3.0")
 
     //7) grid layout
     implementation("androidx.gridlayout:gridlayout:1.0.0")

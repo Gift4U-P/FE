@@ -27,6 +27,9 @@ class GiftTestQuestionFragment : Fragment() {
     // 현재 프래그먼트가 몇 번째 질문인지 추적
     private var questionIndex: Int = 0
 
+    // 로딩 뷰 변수 선언
+    private lateinit var loadingLayout: View
+
     // 서비스 객체 초기화 (API 호출에 사용)
     private val giftTestService: GiftTestService by lazy {
         Gift4uClient.retrofit.create(GiftTestService::class.java)
@@ -42,6 +45,9 @@ class GiftTestQuestionFragment : Fragment() {
         val btnA = view.findViewById<AppCompatButton>(R.id.btn_answer_a)
         val btnB = view.findViewById<AppCompatButton>(R.id.btn_answer_b)
         val btnC = view.findViewById<AppCompatButton>(R.id.btn_answer_c)
+
+        // 로딩 레이아웃 연결
+        loadingLayout = view.findViewById(R.id.layout_loading)
 
         // 추후 진행상황 표시 필요하다면 쓰기
         questionIndex = arguments?.getInt("questionIndex", 0) ?: 0
@@ -110,7 +116,7 @@ class GiftTestQuestionFragment : Fragment() {
         val nextIndex = Big5TestState.answers.size
 
         if (nextIndex < ALL_QUESTIONS.size) {
-            // 1. 다음 질문 로드 (nextIndex가 0~9일 경우 실행)
+            // 다음 질문 로드 (nextIndex가 0~9일 경우 실행)
             val nextFragment = GiftTestQuestionFragment().apply {
                 arguments = Bundle().apply {
                     putInt("questionIndex", nextIndex)
@@ -121,7 +127,7 @@ class GiftTestQuestionFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         } else {
-            // 2. 모든 질문(10개)이 완료되었을 경우 (nextIndex가 10일 때 실행)
+            // 모든 질문(10개)이 완료되었을 경우 (nextIndex가 10일 때 실행)
             sendResultsAndMoveToFinalResult()
         }
     }
@@ -129,9 +135,16 @@ class GiftTestQuestionFragment : Fragment() {
     private fun sendResultsAndMoveToFinalResult() {
         val request = Big5TestState.buildRequest()
 
+        // API 호출 시작 전 로딩 화면 보이기
+        loadingLayout.visibility = View.VISIBLE
+
         giftTestService.sendBig5Results(request).enqueue(object :
             Callback<Big5ResultResponse> {
             override fun onResponse(call: Call<Big5ResultResponse>, response: Response<Big5ResultResponse>) {
+
+                // 응답 받으면 로딩 화면 숨김
+                loadingLayout.visibility = View.GONE
+
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
                     val resultData = response.body()!!.result
 

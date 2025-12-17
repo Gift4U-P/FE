@@ -9,9 +9,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
 import com.example.gift4u.adaptor.GiftAdapter
+import com.example.gift4u.adaptor.ResultGiftAdapter
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.api.home.model.HomeGiftItem
 import com.example.gift4u.api.mypage.model.KeywordDetailRequest
@@ -69,7 +71,7 @@ class MyPageKeywordDetailFragment : Fragment() {
     }
 
     private fun updateUI(view: View, data: com.example.gift4u.api.mypage.model.KeywordDetailResult) {
-        // 1. 상단 버블 텍스트 설정
+        // 상단 버블 텍스트 설정
         view.findViewById<TextView>(R.id.tv_bubble_age).text = data.age
         view.findViewById<TextView>(R.id.tv_bubble_gender).text = data.gender
         view.findViewById<TextView>(R.id.tv_bubble_relation).text = data.relationship
@@ -78,23 +80,34 @@ class MyPageKeywordDetailFragment : Fragment() {
         // 카드 메시지 설정
         view.findViewById<TextView>(R.id.tv_content_message_card).text = data.cardMessage
 
-        // 2. 추천 멘트 설정
+        // 추천 멘트 설정
         val recommendLabel = view.findViewById<TextView>(R.id.tv_keywordText_recommend_label)
         recommendLabel.text = "${data.age} ${data.gender} ${data.relationship}의 ${data.situation}에는\n이런 선물을 추천해요!"
 
-        // 3. 선물 리스트 매핑
-        val giftList = data.giftList.map {
+        // 전체 리스트 생성 및 정렬
+        val fullList = data.giftList.map {
             HomeGiftItem(
                 title = it.title,
                 lprice = it.lprice,
                 link = it.link,
                 image = it.image,
-                mallName = it.mallName
+                mallName = it.mallName,
+                accuracy = it.accuracy
             )
-        }
+        }.sortedByDescending { it.accuracy }
 
-        val rvRecommend = view.findViewById<RecyclerView>(R.id.rv_result_recommend)
-        rvRecommend.adapter = GiftAdapter(giftList)
-        rvRecommend.layoutManager = GridLayoutManager(context, 3)
+        // 리스트 분리
+        val bestList = fullList.take(3)
+        val restList = fullList.drop(3)
+
+        // Best 3 연결 (Rank)
+        val rvBest = view.findViewById<RecyclerView>(R.id.rv_gift_best)
+        rvBest.adapter = ResultGiftAdapter(bestList, ResultGiftAdapter.TYPE_RANK)
+        rvBest.layoutManager = LinearLayoutManager(context)
+
+        // 나머지 연결 (Grid)
+        val rvRest = view.findViewById<RecyclerView>(R.id.rv_gift_rest)
+        rvRest.adapter = ResultGiftAdapter(restList, ResultGiftAdapter.TYPE_GRID)
+        rvRest.layoutManager = GridLayoutManager(context, 3)
     }
 }

@@ -15,9 +15,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
+import com.example.gift4u.adaptor.Big5EvidenceAdapter
 import com.example.gift4u.adaptor.GiftAdapter
+import com.example.gift4u.adaptor.ResultGiftAdapter
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.ui.main.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -65,21 +68,36 @@ class GiftTestResultFragment : Fragment() {
             // 2. 선물 추천 리스트 처리
             val giftList = data.giftList
 
+            // 상세 분석 근거(Evidence) RVA 연결
+            val rvEvidence = view.findViewById<RecyclerView>(R.id.rv_evidence_list)
+            rvEvidence.adapter = Big5EvidenceAdapter(data.evidence)
+            rvEvidence.layoutManager = LinearLayoutManager(context)
+
             // GiftList 전체 항목을 GiftAdapter가 사용하는 Gift 객체로 변환
-            val recommendData = giftList.map { item ->
+            val fullList = data.giftList.map { item ->
                 HomeGiftItem(
                     title = item.title,
                     lprice = item.lprice,
                     link = item.link,
                     image = item.image,
-                    mallName = item.mallName
+                    mallName = item.mallName,
+                    accuracy = item.accuracy
                 )
-            }
+            }.sortedByDescending { it.accuracy } // 높은 점수 순 정렬
 
-            // 리사이클러뷰(rv_gift_list)에 연결
-            val rvGiftList = view.findViewById<RecyclerView>(R.id.rv_gift_list)
-            rvGiftList.adapter = GiftAdapter(recommendData)
-            rvGiftList.layoutManager = GridLayoutManager(context, 3)
+            // 리스트 분리 (Best 3 vs 나머지)
+            val bestList = fullList.take(3) // 상위 3개
+            val restList = fullList.drop(3) // 나머지
+
+            // Best 3 리사이클러뷰 설정 (박스형, Linear)
+            val rvBest = view.findViewById<RecyclerView>(R.id.rv_gift_best)
+            rvBest.adapter = ResultGiftAdapter(bestList, ResultGiftAdapter.TYPE_RANK)
+            rvBest.layoutManager = LinearLayoutManager(context) // 세로 리스트
+
+            // 나머지 리사이클러뷰 설정 (그리드형, Grid 3열)
+            val rvRest = view.findViewById<RecyclerView>(R.id.rv_gift_rest)
+            rvRest.adapter = ResultGiftAdapter(restList, ResultGiftAdapter.TYPE_GRID)
+            rvRest.layoutManager = GridLayoutManager(context, 3) // 3칸 그리드
 
         } ?: run {
             // 데이터가 없을 경우 처리

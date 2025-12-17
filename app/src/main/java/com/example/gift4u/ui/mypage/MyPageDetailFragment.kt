@@ -9,10 +9,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gift4u.R
+import com.example.gift4u.adaptor.Big5EvidenceAdapter
 import com.example.gift4u.api.home.model.HomeGiftItem
 import com.example.gift4u.adaptor.GiftAdapter
+import com.example.gift4u.adaptor.ResultGiftAdapter
 import com.example.gift4u.api.Gift4uClient
 import com.example.gift4u.api.mypage.model.SurveyDetailRequest
 import com.example.gift4u.api.mypage.model.SurveyDetailResponse
@@ -49,6 +52,8 @@ class MyPageDetailFragment : Fragment() {
         return view
     }
 
+
+
     private fun fetchDetailResult(view: View, id: Int) {
         val request = SurveyDetailRequest(surveyId = id)
 
@@ -69,27 +74,39 @@ class MyPageDetailFragment : Fragment() {
     }
 
     private fun updateUI(view: View, data: com.example.gift4u.api.mypage.model.SurveyDetailResult) {
-        // 1. 텍스트 매핑 (XML ID 확인 필요)
         view.findViewById<TextView>(R.id.tv_content_personality_analysis).text = data.analysis
         view.findViewById<TextView>(R.id.tv_content_recommend_reasoning).text = data.reasoning
         view.findViewById<TextView>(R.id.tv_content_message_card).text = data.cardMessage
 
-        // 제목에 저장된 이름 표시 추후 필요하면
-        // view.findViewById<TextView>(R.id.tv_title_personality_analysis).text = "${data.savedName}님의 분석"
+        // Evidence 리스트 연결
+        val rvEvidence = view.findViewById<RecyclerView>(R.id.rv_evidence_list)
+        rvEvidence.adapter = Big5EvidenceAdapter(data.evidence)
+        rvEvidence.layoutManager = LinearLayoutManager(view.context)
 
-        // 2. 선물 리스트 매핑
-        val giftList = data.giftList.map {
+        // 1. 전체 리스트 생성 및 정렬
+        val fullList = data.giftList.map {
             HomeGiftItem(
                 title = it.title,
                 lprice = it.lprice,
                 link = it.link,
                 image = it.image,
-                mallName = it.mallName
+                mallName = it.mallName,
+                accuracy = it.accuracy
             )
-        }
+        }.sortedByDescending { it.accuracy }
 
-        val rvGift = view.findViewById<RecyclerView>(R.id.rv_gift_list)
-        rvGift.adapter = GiftAdapter(giftList)
-        rvGift.layoutManager = GridLayoutManager(context, 3)
+        // 2. 리스트 분리
+        val bestList = fullList.take(3)
+        val restList = fullList.drop(3)
+
+        // 3. Best 3 연결 (Rank)
+        val rvBest = view.findViewById<RecyclerView>(R.id.rv_gift_best)
+        rvBest.adapter = ResultGiftAdapter(bestList, ResultGiftAdapter.TYPE_RANK)
+        rvBest.layoutManager = LinearLayoutManager(context)
+
+        // 4. 나머지 연결 (Grid)
+        val rvRest = view.findViewById<RecyclerView>(R.id.rv_gift_rest)
+        rvRest.adapter = ResultGiftAdapter(restList, ResultGiftAdapter.TYPE_GRID)
+        rvRest.layoutManager = GridLayoutManager(context, 3)
     }
 }

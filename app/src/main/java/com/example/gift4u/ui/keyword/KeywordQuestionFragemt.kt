@@ -41,7 +41,7 @@ class KeywordQuestionFragment : Fragment() {
         QuestionStep("나이", "선물하려는 상대방의\n나이대는 어떻게 되나요?", listOf("10대", "20대", "30대", "40대", "50대", "60대 이상")),
         QuestionStep("성별", "선물하려는 상대방의 성별은\n어떻게 되나요?", listOf("남성", "여성")),
         QuestionStep("관계", "선물하려는 상대방과\n어떤 관계인가요?", listOf("가족", "연인", "친구", "동료", "사제", "기타")),
-        QuestionStep("상황", "어떤 상황에\n선물하시나요?", listOf("생일", "합격축하", "졸업", "졸업", "취업", "승진", "기념일", "집들이", "출산", "감사", "응원"))
+        QuestionStep("상황", "어떤 상황에\n선물하시나요?", listOf("생일", "합격축하", "졸업", "취업", "승진", "기념일", "집들이", "출산", "감사", "응원"))
     )
 
     private lateinit var tvTitle: TextView
@@ -51,11 +51,17 @@ class KeywordQuestionFragment : Fragment() {
     private lateinit var tvProgress: TextView
     private lateinit var adapter: OptionAdapter
 
+    // 로딩 뷰 변수 선언
+    private lateinit var loadingLayout: View
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_keyword_question, container, false)
+
+        // 로딩 레이아웃 연결
+        loadingLayout = view.findViewById(R.id.layout_loading)
 
         // Bottom Navigation 숨기기
         (activity as? MainActivity)?.setBottomNavVisibility(false)
@@ -116,6 +122,9 @@ class KeywordQuestionFragment : Fragment() {
         // 선택된 키워드: [나이, 성별, 관계, 상황]
         // 예: ["20대", "여성", "연인", "생일"] -> API 요청 모델로 변환
 
+        // API 호출 시작 전 로딩 화면 보이기
+        loadingLayout.visibility = View.VISIBLE
+
         val age = selectedKeywords.getOrElse(0) { "20대" }
         val gender = selectedKeywords.getOrElse(1) { "여성" }
         val relationship = selectedKeywords.getOrElse(2) { "친구" }
@@ -131,6 +140,10 @@ class KeywordQuestionFragment : Fragment() {
         keywordTestService.sendKeywordResults(request).enqueue(object :
             Callback<KeywordResultResponse> {
             override fun onResponse(call: Call<KeywordResultResponse>, response: Response<KeywordResultResponse>) {
+
+                // 응답 받으면 로딩 화면 숨김
+                loadingLayout.visibility = View.GONE
+
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
                     val resultData = response.body()!!.result
 
@@ -138,7 +151,7 @@ class KeywordQuestionFragment : Fragment() {
                     val fragment = KeywordResultFragment()
                     val bundle = Bundle()
                     bundle.putStringArrayList("keywords", ArrayList(selectedKeywords)) // 상단 버블용
-                    bundle.putSerializable("keywordResult", resultData) // [중요] API 결과 전달
+                    bundle.putSerializable("keywordResult", resultData) // API 결과 전달
                     fragment.arguments = bundle
 
                     parentFragmentManager.beginTransaction()
@@ -164,7 +177,6 @@ class KeywordQuestionFragment : Fragment() {
     }
 }
 
-// OptionAdapter 클래스 그대로 유지
 class OptionAdapter(private val onClick: (String) -> Unit) : RecyclerView.Adapter<OptionAdapter.ViewHolder>() {
     private var items = listOf<String>()
     private var selectedPosition = -1

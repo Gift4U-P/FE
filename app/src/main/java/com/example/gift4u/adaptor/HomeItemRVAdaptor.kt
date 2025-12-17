@@ -11,6 +11,10 @@ import com.bumptech.glide.Glide
 import com.example.gift4u.api.home.model.HomeGiftItem
 import java.text.NumberFormat
 import java.util.Locale
+// 링크이동
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 
 // 어댑터 클래스
 class GiftAdapter(private var giftList: List<HomeGiftItem>) : RecyclerView.Adapter<GiftAdapter.GiftViewHolder>() {
@@ -49,6 +53,16 @@ class GiftAdapter(private var giftList: List<HomeGiftItem>) : RecyclerView.Adapt
             .error(R.drawable.ic_launcher_background)       // 에러 시 이미지 (임시)
             .centerCrop()
             .into(holder.img)
+
+        // 아이템 클릭 시 브라우저 이동
+        holder.itemView.setOnClickListener {
+            val url = item.link
+
+            if (!url.isNullOrEmpty()) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                holder.itemView.context.startActivity(intent)
+            }
+        }
     }
 
     override fun getItemCount(): Int = giftList.size

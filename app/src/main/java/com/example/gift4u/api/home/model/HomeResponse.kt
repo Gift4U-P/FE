@@ -23,5 +23,6 @@ data class HomeGiftItem(
     @SerializedName("lprice") val lprice: String, // 가격 (String 형태)
     @SerializedName("link") val link: String,
     @SerializedName("image") val image: String,   // 이미지 URL
-    @SerializedName("mallName") val mallName: String // 브랜드/몰 이름
+    @SerializedName("mallName") val mallName: String, // 브랜드/몰 이름
+    @SerializedName("accuracy") val accuracy: Double? // 정확도 (result 용)
 )
